@@ -34,7 +34,7 @@ Lighttpd installation notes
        - sudo apt-get install lighttpd
 
 3. Install php5
-       sudo apt-get install php5-cgi php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-mhash php5-ming php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-fpm php5-cgi php5-cli php5-common
+       - sudo apt-get install php5-cgi php5-mysql php5-curl php5-gd php5-idn php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-mhash php5-ming php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-fpm php5-cgi php5-cli php5-common
 
 4. Setup lighttpd
        Create following symlinks from /etc/lighttpd/conf-available to /etc/lighttpd/conf-enabled
@@ -63,7 +63,8 @@ Setup notes
        You can follow the detailed notes from http://elinux.org/RPi_Easy_SD_Card_Setup
    
 2. Install necessary tools and libraries
-       - sudo apt-get install build-essential make git subversion libsqlite3-dev libxmlrpc-c3-dev
+       - sudo apt-get install build-essential make git 
+       - sudo apt-get install libsqlite3-dev libxmlrpc-c3-dev
 
 3. Fetch the latest source code
        - cd /opt
