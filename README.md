@@ -63,7 +63,7 @@ Setup notes
        You can follow the detailed notes from http://elinux.org/RPi_Easy_SD_Card_Setup
    
 2. Install necessary tools and libraries
-       sudo apt-get install build-essential make git subversion libsqlite3-dev libxmlrpc-c3-dev
+       - sudo apt-get install build-essential make git subversion libsqlite3-dev libxmlrpc-c3-dev
 
 3. Fetch the latest source code
        - cd /opt
