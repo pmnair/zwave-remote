@@ -7,18 +7,16 @@ Open source z-wave library for home automation
 
 About my setup
 --------------
-I have the following
-1. aeon z-stick
+I have the following 
+1. aeon z-stick 
 2. raspberry pi: hosts the backend to control my z-wave devices and a simple web interface over lighttpd to interact with the backend.
 
 About the source code
 ---------------------
-There are 3 parts here
-1. zwave_lib: A simple zwave protocol library with its own test code.
-2. hzremote: The remote daemon that uses the zwave protocol library and provides an XML-RPC interface to control your zwave module
-   I have an aeon z-stick that acts as my gateway to all my z-wave enabled devices
-3. www: A simple web interface written in PHP and JS. This web interface talks to my backend using the XML-RPC interface
-   I host it on a lighttpd server
+There are 3 parts here 
+1. zwave_lib: A simple zwave protocol library with its own test code. 
+2. hzremote: The remote daemon that uses the zwave protocol library and provides an XML-RPC interface to control your zwave module I have an aeon z-stick that acts as my gateway to all my z-wave enabled devices 
+3. www: A simple web interface written in PHP and JS. This web interface talks to my backend using the XML-RPC interface I host it on a lighttpd server
 
 Lighttpd installation notes
 ---------------------------
