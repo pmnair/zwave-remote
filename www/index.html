@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        
+        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+        Remove this if you use the .htaccess -->
+        <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+        -->
+        <title>Intelligent Home Control</title>
+        <meta name="description" content="">
+        <meta name="author" content="Praveen Nair">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <link rel="stylesheet" href="css/bootstrap-theme.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/home.remote.css">
+        <script src="js/bootstrap.js" type="javascript"></script>		
+        <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+        <!--<link rel="shortcut icon" href="images/home-remote.ico">-->
+        <link rel="icon" type="image/png" href="images/home-remote.png">
+        <link rel="apple-touch-icon" href="images/home-remote.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="images/home-remote_57x57.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/home-remote_114x114.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/home-remote_144x144.png">
+        <style type="text/css">
+            iframe#cam1 {width: 320px; height: 240px}
+        </style>
+        <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="js/xmlrpc.js"></script>
+        <script type="text/javascript" src="js/backend-api.js"></script>
+        <script type="text/javascript">
+        function changeTab( tabname, liname ) {
+            $('#tab-remote').hide();
+            $('#tab-camera').hide();   	
+            $('#tab-setup').hide();  	
+            $('#li-remote').removeClass('active');
+            $('#li-camera').removeClass('active');
+            $('#li-setup').removeClass('active');
+        
+            $('#'+liname).addClass('active');
+            $('#'+tabname).show();
+        }
+        function hideTab( tabname, liname ) {
+            $('#'+liname).removeClass('active');
+            $('#'+tabname).hide();
+        }
+        function showTab( tabname, liname ) {
+            $('#'+liname).addClass('active');
+            $('#'+tabname).show();
+        }
+        function hideCameraTab() {
+            document.getElementById("cam1").src = "";
+            hideTab('tab-camera', 'li-camera');
+        }
+        function hideRemoteTab() {
+            clearRefresh();
+            hideTab('tab-remote', 'li-remote');
+        }
+        function showRemoteTab() {
+            hideCameraTab();
+            hideTab('tab-setup', 'li-setup');
+            showTab('tab-remote', 'li-remote');
+            RefreshAllNodes();
+        }
+        function showCameraTab() {
+            var cam1src = "http://" + location.host + "/videostream.cgi?user=visitor&pwd=";
+            
+            hideRemoteTab();
+            hideTab('tab-setup', 'li-setup');
+            document.getElementById("cam1").src = cam1src;
+            showTab('tab-camera', 'li-camera');
+        }
+        function showSetupTab() {
+            hideCameraTab();
+            hideRemoteTab();
+            showTab('tab-setup', 'li-setup');
+            RefreshNodeList();
+        }
+        $(function() {
+            // Tabs
+            showRemoteTab();
+        });
+        </script>
+    </head>
+    
+    <body >
+        <div id="home-remote-wrapper" class="container gradient">
+            <div id="home-remote-header" class="navbar navbar-fixed-top">
+                <div class="container header">
+                    <ul class="nav nav-pills pull-right">
+                        <li class="active" id="li-remote" onclick="changeTab('tab-remote', 'li-remote')">
+                            <a href="#">Remote</a>
+                        </li>
+                        <li id="li-camera" onclick="showCameraTab()"><a href="#">Camera</a></li>
+                        <li id="li-setup" onclick="changeTab('tab-setup', 'li-setup')"><a href="#">Setup</a></li>
+                    </ul>
+                    <img src="images/home-remote.png">Intelligent Home Remote</img>
+                </div>
+            </div>
+            <div class="jumbotron">
+                <div id="tabs">
+                    <div id="tab-remote"> 
+                        <h6>Refreshing Node List...</h6>
+                        <button id="refresh-nodes" align="center" type="button" 
+                                class="btn btn-success" onclick="RefreshAllNodes()">RefreshNodes</button>
+                    </div>
+                    <div id="tab-setup">
+                        <h6>Refreshing Node List...</h6>
+                    </div>
+                    <div id="tab-camera"> 
+                        <iframe id="cam1" src="" />
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <p>
+                    &copy; Copyright  by Praveen Nair
+                </p>
+            </footer>
+        </div>
+    </body>
+</html>
