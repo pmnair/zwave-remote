@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <getopt.h>
 #include <xmlrpc-c/base.h>
 #include <xmlrpc-c/abyss.h>
 #include <xmlrpc-c/server.h>
@@ -36,6 +37,7 @@
 
 #include "xmlrpc-utils.h"
 #include "xmlrpc-methods.h"
+#include "xmlconfig.h"
 #include "zw_node.h"
 
 hzremote_ctx_S hzr_ctx;
@@ -73,18 +75,46 @@ struct xmlrpc_method_info3 const methodInfo[] = {
 	}
 };
 
+static char short_opts[] = "dc:";
+static const struct option long_opts[] = {
+        { "daemon",	0,	0,	'd' },
+        { "config",	1,	0,	'c' },
+        { NULL, 0, NULL, 0 }
+};
+
+static char *usage_txt =
+"Call: hzremote -d|--daemon [-c|--config <config file>]\n\n";
+
 int main(int argc, char **argv)
 {
 	xmlrpc_server_abyss_parms serverparm;
 	xmlrpc_registry * registryP;
 	xmlrpc_env env;
 	int ii;
-		
-	if ( ( argc > 1 ) && ( 0 == strncmp( argv[1], "--daemon", 8 ) ) ) {
-		if ( 0 != daemon( 0, 0 ) ) {
-			SYSLOG_FAULT("Failed to daemonize");
-			return 1;
-		}
+	int c;
+	int dmn = 0;
+        char *config_file = NULL;
+        
+	while ( ( c = getopt_long( argc, argv, short_opts, long_opts, NULL ) ) != -1 )
+        {
+		switch( c ) {
+                        case 'd':
+                                dmn = 1;
+                                break;
+                        case 'c':
+                                config_file = strdup( optarg );
+                                break;
+                        case '?':
+                        default:
+                                fprintf(stderr, "unknown option\n");
+                                fprintf(stderr, "%s", usage_txt);
+                                exit(1);
+                }
+                
+        }
+        if ( dmn && (0 != daemon( 0, 0 ) )) {
+                SYSLOG_FAULT("Failed to daemonize");
+                return 1;
 	}
 
 	if ( zw_api_init( "/dev/ttyUSB0", &hzr_ctx.zw_ctx ) ) {
@@ -95,6 +125,9 @@ int main(int argc, char **argv)
         sleep(3);
         zw_list_nodes();
 
+        if ( config_file )
+        	xmlconfig_load( config_file );
+        
 	xmlrpc_env_init(&env);
 	dieOnFault("init", &env);
 
@@ -116,6 +149,7 @@ int main(int argc, char **argv)
 
 	xmlrpc_server_abyss(&env, &serverparm, XMLRPC_APSIZE(registryP));
 
+	if ( config_file ) free( config_file );
 	return 0;
 }
 
