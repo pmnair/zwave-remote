@@ -59,8 +59,8 @@ struct xmlrpc_method_info3 const methodInfo[] = {
 	.serverInfo = &hzr_ctx,
 	},
 	{
-	.methodName = "hzremote.toggleSwitch",
-	.methodFunction = &xmlrpc_toggle_switch,
+	.methodName = "hzremote.toggleSwitchOnOff",
+	.methodFunction = &xmlrpc_toggle_switch_on_off,
 	.serverInfo = &hzr_ctx,
 	},
 	{

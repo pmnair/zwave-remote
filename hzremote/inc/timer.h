@@ -1,5 +1,8 @@
 //
-//  Created by Praveen Murali Nair on 09/07/2013.
+//  timer.h
+//  zwave-remote
+//
+//  Created by Praveen Nair on 12/12/13.
 //  Copyright (c) 2013 Praveen M Nair. All rights reserved.
 //
 // 	Redistribution and use in source and binary forms, with or without
@@ -24,60 +27,12 @@
 //      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 //      SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-#ifndef _XMLRPC_METHODS_H_
-#define _XMLRPC_METHODS_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <xmlrpc-c/base.h>
-#include <xmlrpc-c/abyss.h>
-#include <xmlrpc-c/server.h>
-#include <xmlrpc-c/server_abyss.h>
+#ifndef zwave_remote_timer_h
+#define zwave_remote_timer_h
 
-#include <xmlrpc-c/config.h>
-
-#include "zw_api.h"
-#include "log.h"
-
-typedef struct _hzremote_ctx {
-	zw_api_ctx_S zw_ctx;
-} hzremote_ctx_S;
-
-xmlrpc_value * xmlrpc_get_node_list(
-		xmlrpc_env * const envP, 
-		xmlrpc_value * const paramArrayP, 
-		void * const serverInfo, 
-		void * const channelInfo);
-
-xmlrpc_value * xmlrpc_turn_switch_off(
-		xmlrpc_env * const envP, 
-		xmlrpc_value * const paramArrayP, 
-		void * const serverInfo, 
-		void * const channelInfo);
-
-xmlrpc_value * xmlrpc_turn_switch_on(
-		xmlrpc_env * const envP, 
-		xmlrpc_value * const paramArrayP, 
-		void * const serverInfo, 
-		void * const channelInfo);
-
-xmlrpc_value * xmlrpc_toggle_switch_on_off(
-		xmlrpc_env * const envP, 
-		xmlrpc_value * const paramArrayP, 
-		void * const serverInfo, 
-		void * const channelInfo);
-
-xmlrpc_value * xmlrpc_refresh_state(
-		xmlrpc_env * const envP, 
-		xmlrpc_value * const paramArrayP, 
-		void * const serverInfo, 
-		void * const channelInfo);
+void
+timer_add( int nodeid, const char *time, int duration );
 
 
-xmlrpc_value * xmlrpc_set_node_label(
-		xmlrpc_env * const envP, 
-		xmlrpc_value * const paramArrayP, 
-		void * const serverInfo, 
-		void * const channelInfo);
-
-#endif /* _XMLRPC_METHODS_H_ */
+#endif

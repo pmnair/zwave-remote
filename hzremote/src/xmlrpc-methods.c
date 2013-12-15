@@ -59,8 +59,11 @@ xmlrpc_value * xmlrpc_get_node_list(
                 zwnode = (struct zw_node *)node;
 		switch( zwnode->cclass ) {
 		case COMMAND_CLASS_SWITCH_BINARY:
-			type = "Switch";
-			state = ( zwnode->state == 0 )?"OFF":"ON";
+                        if ( zwnode->stype == 3 )
+				type = "PushSwitch";
+                        else
+				type = "Switch";
+                        state = ( zwnode->state == 0 )?"OFF":"ON";
 			break;
 		case COMMAND_CLASS_SENSOR_BINARY:
 			type = "DoorSensor";
@@ -90,6 +93,39 @@ xmlrpc_value * xmlrpc_get_node_list(
 	return result;
 }
 
+static int
+xmlrpc_change_node_state( hzremote_ctx_S *ctx,
+                         int nodeid,
+                         int state )
+{
+        int res;
+        int val = state;
+        int retries = 5;
+        
+        do {
+		res = zw_node_set_value( &ctx->zw_ctx, (u8)nodeid, (void *)&val );
+                if ( res ) usleep( 500 );
+        } while ( res && retries-- );
+        
+        if ( res ) {
+                SYSLOG_INFO( "xmlrpc_change_node_state: failed to set state (%d) for node(%d)", state, nodeid );
+                goto out;
+        }
+        
+        retries = 5;
+        do {
+        	res = zw_node_get_value( &ctx->zw_ctx, (u8)nodeid, (void *)&val );
+                if ( res ) {
+                        SYSLOG_INFO( "xmlrpc_change_node_state: failed to get state for node(%d)", nodeid );
+                        usleep( 500 );
+                }
+                if ( val == state ) break;
+        } while ( res && retries-- );
+
+out:
+        return res;
+}
+
 xmlrpc_value * xmlrpc_turn_switch_off(
 		xmlrpc_env * const envP, 
 		xmlrpc_value * const paramArrayP, 
@@ -99,7 +135,6 @@ xmlrpc_value * xmlrpc_turn_switch_off(
 	hzremote_ctx_S *ctx = (hzremote_ctx_S *)serverInfo;
 	int nodeid;
 	int res;
-	int val = ZW_NODE_STATE_OFF;
 	xmlrpc_value *result = xmlrpc_struct_new( envP );
 
 	xmlrpc_decompose_value( envP, paramArrayP, "({s:i,*})", "NodeId", &nodeid );
@@ -107,11 +142,7 @@ xmlrpc_value * xmlrpc_turn_switch_off(
 
 	SYSLOG_INFO( "xmlrpc_turn_switch_off: id - %d", nodeid );
 
-	res = zw_node_set_value( &ctx->zw_ctx, (u8)nodeid, (void *)&val );
-        if ( !res ) {
-                usleep(500);
-                res = zw_node_get_value( &ctx->zw_ctx, (u8)nodeid, (void *)&val );
-        }
+        res = xmlrpc_change_node_state( ctx, nodeid, ZW_NODE_STATE_OFF );
 
 	xmlrpc_set_struct_string( envP, result, "Method", "hzremote.turnSwitchOff" );
 	xmlrpc_set_struct_int( envP, result, "Result", res );
@@ -127,7 +158,6 @@ xmlrpc_value * xmlrpc_turn_switch_on(
 {
 	hzremote_ctx_S *ctx = (hzremote_ctx_S *)serverInfo;
 	int nodeid;
-	int val = ZW_NODE_STATE_ON;
 	int res;
 	xmlrpc_value *result = xmlrpc_struct_new( envP );
 
@@ -136,33 +166,44 @@ xmlrpc_value * xmlrpc_turn_switch_on(
 
 	SYSLOG_INFO( "xmlrpc_turn_switch_on: id - %d", nodeid );
 
+        res = xmlrpc_change_node_state( ctx, nodeid, ZW_NODE_STATE_ON );
 
-	res = zw_node_set_value( &ctx->zw_ctx, (u8)nodeid, (void *)&val );
-	if ( !res ) {
-		usleep(500);
-		res = zw_node_get_value( &ctx->zw_ctx, (u8)nodeid, (void *)&val );
-	}
-	
 	xmlrpc_set_struct_string( envP, result, "Method", "hzremote.turnSwitchOn" );
 	xmlrpc_set_struct_int( envP, result, "Result", res );
 
 	return result;
 }
 
-xmlrpc_value * xmlrpc_toggle_switch(
+xmlrpc_value * xmlrpc_toggle_switch_on_off(
 		xmlrpc_env * const envP, 
 		xmlrpc_value * const paramArrayP, 
 		void * const serverInfo, 
 		void * const channelInfo)
 {
-/*
-	xmlrpc_value *disk_name_array;
-	xmlrpc_value *disk_name;
-	xmlrpc_value *result;
+	hzremote_ctx_S *ctx = (hzremote_ctx_S *)serverInfo;
+	int nodeid;
+	int res;
+	xmlrpc_value *result = xmlrpc_struct_new( envP );
+        
+	xmlrpc_decompose_value( envP, paramArrayP, "({s:i,*})", "NodeId", &nodeid );
+	dieOnFault("decompose_result", envP);
+        
+	SYSLOG_INFO( "xmlrpc_toggle_switch_on_off: id - %d", nodeid );
+        
+	/* Turn the node ON */
+        res = xmlrpc_change_node_state( ctx, nodeid, ZW_NODE_STATE_ON );
+        if ( res ) goto out;
 
+        usleep(500);
+        
+        /* Turn the node OFF */
+        res = xmlrpc_change_node_state( ctx, nodeid, ZW_NODE_STATE_OFF );
+
+out:
+	xmlrpc_set_struct_string( envP, result, "Method", "hzremote.toggleSwitchOnOff" );
+	xmlrpc_set_struct_int( envP, result, "Result", res );
+        
 	return result;
-*/
-	return NULL;
 }
 
 xmlrpc_value * xmlrpc_refresh_state(

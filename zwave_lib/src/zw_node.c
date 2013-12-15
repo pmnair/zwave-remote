@@ -332,6 +332,8 @@ register_zw_node( zw_api_ctx_S *ctx, const u8 *frame, int id )
 			zwnode->cclass = get_cmd_class( zwnode->gtype );
 			cc_get( ctx, id, zwnode->cclass, (void *)&zwnode->state );
 			rc = 0;
+                        SYSLOG_INFO( "register_zw_node: %d func=%d, bt=%d, gt=%d, st=%d\n", id,
+                                    zwnode->func, zwnode->btype, zwnode->gtype, zwnode->stype );
 			break;
 		}
 	}
