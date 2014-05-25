@@ -147,6 +147,14 @@ function TurnSwitchOn(node) {
     xmlrpc( xmlserver, "hzremote.turnSwitchOn", params, callback, err, final );
 }
 
+//Toggle Switch ON and then back OFF
+function ToggleSwitchOnOff(node) {
+    var param_nodeid  = {'NodeId': node};
+    var params = new Array();
+    params[0] = param_nodeid;
+    xmlrpc( xmlserver, "hzremote.toggleSwitchOnOff", params, callback, err, final );
+}
+
 //Refresh Node State
 function RefreshNodeState(node) {
     var param_nodeid  = {'NodeId': node};

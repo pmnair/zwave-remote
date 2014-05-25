@@ -96,6 +96,7 @@ HTTP1._factory = null;
  * given a single JS Object representing the server's response.
  */
 var xmlrpc = function(server, method, params, callback, callErr, callFinal) {
+/*    
 	if (callErr == null)
 		callErr = alert;
 
@@ -150,9 +151,10 @@ var xmlrpc = function(server, method, params, callback, callErr, callFinal) {
 		callErr("Connection Error " + request.status);
 		return;
 	}
+*/
 
-
-	/*var request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
+	var sending = xmlrpc.writeCall(method, params);
 	request.open("POST", server, true);	// false = Synchronous
 
 	request.onreadystatechange = function() {
@@ -194,10 +196,7 @@ var xmlrpc = function(server, method, params, callback, callErr, callFinal) {
 	};
 
 	request.setRequestHeader("Content-Type", "text/xml");
-	var sending = xmlrpc.writeCall(method, params);
-	request.send(sending);*/
-
-
+	request.send(sending);
 };
 
 xmlrpc.writeCall = function(method, params) {
