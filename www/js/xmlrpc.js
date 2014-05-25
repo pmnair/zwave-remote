@@ -95,11 +95,10 @@ HTTP1._factory = null;
  * Parameters are passed as JS Objects, and the callback function is
  * given a single JS Object representing the server's response.
  */
-var xmlrpc = function(server, method, params, callback, callErr, callFinal) {
-/*    
+var xmlrpc=function(server, method, params, callback, callErr, callFinal) {
 	if (callErr == null)
 		callErr = alert;
-
+/*    
 	var request = new XMLHttpRequest();
 	try {
 		request.open("POST", server, false);	// false = Synchronous
