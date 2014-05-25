@@ -3,6 +3,7 @@ var intervalId = 0;
 
 var nodeList = new Array();
 var xmlserver = "http://" + location.host + "/RPC2";
+//var xmlserver = "http://192.168.1.7/RPC2";
 
 function clearRefresh(interval) {
     if (intervalId > 0) {
@@ -73,6 +74,22 @@ function callback(ret) {
                             <div class='onoffswitch-inner'></div> \
                             <div class='onoffswitch-switch'></div> \
                             </label></div>";
+                        }
+                        else if ( nodeList[i]["NodeState"] == "ON" ) {
+                            var switchName = "switchNode" + nodeList[i]["NodeId"];
+                            nodeStr += "<div class='onoffswitch'><input type='checkbox' name=" + switchName +
+                            " class='onoffswitch-checkbox' id=" + switchName + 
+                            " onclick='TurnSwitchOff(" + nodeList[i]["NodeId"] + ")' checked>" +
+                            " <label class='onoffswitch-label' for=" + switchName + "> \
+                            <div class='onoffswitch-inner'></div> \
+                            <div class='onoffswitch-switch'></div> \
+                            </label></div>";
+                        }
+                    }
+                    else if (nodeList[i]["NodeType"] == "PushSwitch") {
+                        if (nodeList[i]["NodeState"] == "OFF") {
+                            nodeStr += "<div class='button'><button class='pushbtn'" +
+                            " onclick='ToggleSwitchOnOff(" + nodeList[i]["NodeId"] + ")'/></div>";
                         }
                         else if ( nodeList[i]["NodeState"] == "ON" ) {
                             var switchName = "switchNode" + nodeList[i]["NodeId"];
